@@ -1,0 +1,24 @@
+{
+    "name": "ray/wechat",
+    "description": "Wechat API Helpers",
+    "authors": [
+        {
+            "name": "Ray",
+            "email": "bernierayxu@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*",
+        "guzzlehttp/guzzle": "~4.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Ray\\Wechat\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
