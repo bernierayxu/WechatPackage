@@ -37,6 +37,9 @@ class WechatServiceProvider extends ServiceProvider {
 		App::bind('wechat.file', function(){
 			return new WechatFile;
 		});
+		App::bind('wechat.message', function(){
+			return new WechatMessage;
+		});
 	}
 
 	/**
@@ -46,7 +49,7 @@ class WechatServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('wechat.request', 'wechat.auth', 'wechat.file');
+		return array('wechat.request', 'wechat.auth', 'wechat.file', 'wechat.message');
 	}
 
 }

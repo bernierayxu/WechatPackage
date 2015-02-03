@@ -60,7 +60,7 @@ class WechatRequest{
 	}
 
 	public function saveInCache($result, $request_url_tag){
-var_dump($result);
+//var_dump($result);
 		switch ($request_url_tag) {
 			case 'getAccessToken':
 				\Cache::put('expires_in', $result['expires_in'], $result['expires_in']);
