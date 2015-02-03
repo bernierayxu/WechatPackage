@@ -1,5 +1,5 @@
 <?php namespace Ray\Wechat;
-
+use App;
 use Illuminate\Support\ServiceProvider;
 
 class WechatServiceProvider extends ServiceProvider {
@@ -28,7 +28,15 @@ class WechatServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		App::bind('wechat.request', function(){
+			return new WechatRequest;
+		});
+		App::bind('wechat.auth', function(){
+			return new WechatAuth;
+		});
+		App::bind('wechat.file', function(){
+			return new WechatFile;
+		});
 	}
 
 	/**
@@ -38,7 +46,7 @@ class WechatServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return array('wechat.request', 'wechat.auth', 'wechat.file');
 	}
 
 }
