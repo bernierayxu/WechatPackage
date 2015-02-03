@@ -26,6 +26,7 @@ class WechatRequest{
 
 		$parameter['access_token'] = \Cache::get('access_token');
 //dd($parameter['access_token']);
+		//
 
 		$client = new \GuzzleHttp\Client();
 
