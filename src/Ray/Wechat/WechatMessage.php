@@ -1,6 +1,8 @@
 <?php
 namespace Ray\Wechat;
 use App;
+use Carbon\Carbon;
+
 class WechatMessage{
 	public $from = '';
 	public $to = '';
@@ -25,10 +27,11 @@ class WechatMessage{
 	public $longitude = '';
 	public $precision = '';
 	public $event = '';
+	public $recognition = '';
 
 	public function __construct(){
 
-		$message = simplexml_load_string(Request::getContent());
+		$message = simplexml_load_string(\Request::getContent());
 		if($message && isset($message->MsgType)){
 
 		    switch ($message->MsgType) {
@@ -41,7 +44,8 @@ class WechatMessage{
 		    		break;	    	
 		    	case 'voice':
 		    		$this->format = $message->format;
-		    		$this->media_id = $message->MediaId;			    		
+		    		$this->media_id = $message->MediaId;
+		    		$this->recognition = isset($message->Recognition)? $message->Recognition : "";			    		
 		    		break;	    	
 		    	case 'video':
 		    		$this->thumb_media_id = $message->ThumbMediaId;
@@ -94,9 +98,56 @@ class WechatMessage{
 		    $this->created_at = $message->CreateTime;
 		    $this->message_id = $message->MsgId; 
 		    $this->type = $message->MsgType;
-
-		
 		}
+
+		// $reply['content'] = 'I love you';
+		// $this->reply('text', $reply);
+
+
+		// $item['title'] = 'Big News';
+		// $item['description'] = 'Someone';
+		// $item['pic_url'] = 'http://www.google.com';
+		// $item['url'] = 'http://www.dog.com';
+		// $reply['items'][] = $item;
+
+		// $this->reply('article', $reply);
 	}
 	
+	public function reply($type, $data){
+		$content = '';
+		switch ($type) {
+			case 'text':
+				$template = \Config::get('wechat::message.text');
+				if (isset($data['content'])) {
+                    $content = sprintf($template, $this->from, $this->to, 
+                    	Carbon::now()->timestamp, 'text', $data['content']);
+                }
+				break;
+			case 'article':
+				$template = \Config::get('wechat::message.article_start');
+				if (isset($data['items'])) {
+                    $content = sprintf($template, $this->from, $this->to, 
+                    	Carbon::now()->timestamp, 'news', count($data['items']));
+                    
+                    if(count($data['items']) > 0){
+                    	foreach ($data['items'] as $item) {
+                    		if(isset($item['title']) && isset($item['description']) 
+                    			&& isset($item['pic_url']) && isset($item['url'])){
+
+                    			$template = \Config::get('wechat::message.item');
+                    			$content .= sprintf($template, $item['title'], $item['description'], $item['pic_url'], $item['url']);
+                    		}
+                    	}
+                    }
+
+                    $template = \Config::get('wechat::message.article_end');
+                    $content .= $template;
+                }
+				break;
+			
+			default:
+				break;
+		}
+		echo $content;
+	}
 }
